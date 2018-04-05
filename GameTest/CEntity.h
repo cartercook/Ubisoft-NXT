@@ -1,16 +1,11 @@
-#include "table.h"
-
 #pragma once
+#include "table.h"
 class CEntity
 {
 public:
-	CEntity(float x, float y, CTable table);
-	void Render();
-	~CEntity();
-private:
-	float x = 0;
-	float y = 0;
-	CTable table;
-	int size;
+	virtual void Update(float deltaTime) = 0;
+	virtual void Render() = 0;
+public:
+	CPoint position;
 };
 

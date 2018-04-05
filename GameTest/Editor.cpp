@@ -14,7 +14,7 @@
 #include "table.h"
 #include "Editor.h"
 
-CTable* gTable;
+CTable* gTable = new CTable;
 LineType gDefaultLineType = eLine_Hard;
 const char* gControlsMessage = "Controls\n"
 	"Left-Click - Select Line, drag points\n"
@@ -36,10 +36,7 @@ const float POINT_EPSILON = 0.01f;
 //------------------------------------------------------------------------
 void EditorInit()
 {
-	gTable = new CTable;
 	Editor::Load(gDefaultFileName);
-
-
 }
 
 //------------------------------------------------------------------------
@@ -419,7 +416,7 @@ EditorState Editor::Save(const char* fileName)
 }
 
 
-void Editor::Load(const char* fileName)
+CTable Editor::Load(const char* fileName)
 {
 	std::fstream file;
 	file.open(fileName, std::fstream::in);
@@ -451,6 +448,8 @@ void Editor::Load(const char* fileName)
 		}
 
 		file.close();
+
+		return *gTable;
 	}
 	else
 	{

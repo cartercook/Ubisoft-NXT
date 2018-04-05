@@ -12,6 +12,18 @@ enum LineType
 	eLine_END
 };
 
+class CVector
+{
+public:
+	CVector(float x, float y);
+	float Length();
+	CVector Normalized();
+	CVector operator*(float value);
+public:
+	float m_x;
+	float m_y;
+};
+
 class CPoint
 {
 public:
@@ -42,6 +54,7 @@ public:
 	CLineSegment();
 	CLineSegment(float x1, float y1, float x2, float y2, LineType type);
 	float DistanceToLine(float x, float y);
+	CVector VectorToPoint(float x, float y);
 	bool IsOnLine(float x, float y, float tolerance = 5.0f);
 	void Render(CLineDefinition def);
 public:

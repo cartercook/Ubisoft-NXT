@@ -16,5 +16,5 @@ namespace Editor
 	EditorState UpdateMoveLine(float x, float y);
 	EditorState UpdateAddLine(float x, float y);
 	EditorState Save(const char* fileName);
-	void Load(const char* fileName);
+	CTable Load(const char* fileName);
 }

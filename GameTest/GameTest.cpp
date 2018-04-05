@@ -10,15 +10,16 @@
 #include "app\app.h"
 #include "CEntity.h"
 #include "ball.h"
-
-Ball *ball = new Ball(100, 100, 100);
+#include "Editor.h"
+CTable level;
+Ball ball = Ball(300, 700, 25);
 
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init()
 {
-
+	level = Editor::Load("table.txt");
 }
 
 //------------------------------------------------------------------------
@@ -27,7 +28,8 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-
+	ball.Update(deltaTime);
+	ball.Collide(level);
 }
 
 //------------------------------------------------------------------------
@@ -36,8 +38,8 @@ void Update(float deltaTime)
 //------------------------------------------------------------------------
 void Render()
 {
-	ball->Render();
-	App::Print(0, 0, "HELP");
+	ball.Render();
+	level.Render();
 }
 
 //------------------------------------------------------------------------

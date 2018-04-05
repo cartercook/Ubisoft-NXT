@@ -14,9 +14,8 @@ CTable::CTable()
 
 void CTable::Render()
 {
-	for (int i = 0; i < m_lines.size(); i++)
+	for (CLineSegment line : m_lines)
 	{
-		CLineSegment line = m_lines.at(i);
 		line.Render(m_lineDefs[line.m_type]);
 	}
 }
@@ -40,6 +39,11 @@ CLineSegment::CLineSegment(float x1, float y1, float x2, float y2, LineType type
 
 float CLineSegment::DistanceToLine(float x, float y)
 {
+	return VectorToPoint(x, y).Length();
+}
+
+CVector CLineSegment::VectorToPoint(float x, float y)
+{
 	const float x0 = m_start.m_x;
 	const float x1 = m_end.m_x;
 	const float y0 = m_start.m_y;
@@ -48,20 +52,17 @@ float CLineSegment::DistanceToLine(float x, float y)
 	float dx = x1 - x0;
 	float dy = y1 - y0;
 
-	float linelengthSquared = dx*dx + dy*dy;
+	float linelengthSquared = dx * dx + dy * dy;
 	float param = ((x - x0)*dx + (y - y0)*dy) / linelengthSquared;
 	if (param > 1)
 		param = 1;
 	if (param < 0)
 		param = 0;
 
-	float nearestX = x0 + param*dx;
-	float nearestY = y0 + param*dy;
+	float nearestX = x0 + param * dx;
+	float nearestY = y0 + param * dy;
 
-	float distX = x - nearestX;
-	float distY = y - nearestY;
-	float distance = sqrt((distX*distX) + (distY*distY));
-	return distance;
+	return CVector(x - nearestX, y - nearestY);
 }
 
 /* float CLineSegment::DistanceToInfiniteLine(float x, float y)
@@ -109,4 +110,26 @@ CLineDefinition::CLineDefinition(const char * name, float r, float g, float b)
 	m_Red = r;
 	m_Green = g;
 	m_Red = b;
+}
+
+CVector::CVector(float x, float y)
+{
+	m_x = x;
+	m_y = y;
+}
+
+float CVector::Length()
+{
+	return sqrt(m_x*m_x + m_y*m_y);
+}
+
+CVector CVector::Normalized()
+{
+	float length = Length();
+	return CVector(m_x/length, m_y/length);
+}
+
+CVector CVector::operator*(float value)
+{
+	return CVector(m_x*value, m_y*value);
 }
