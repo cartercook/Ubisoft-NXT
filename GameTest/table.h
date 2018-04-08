@@ -19,7 +19,8 @@ public:
 	float Length();
 	CVector Normalized();
 	CVector operator*(float value);
-	CVector operator-(CVector vector);
+	CVector operator+(CVector vector);
+	void operator+=(CVector vector);
 public:
 	float m_x;
 	float m_y;
@@ -30,7 +31,7 @@ class CPoint
 public:
 	float DistanceToPoint(float x, float y);
 	bool IsOnPoint(float x, float y, float tolerance);
-
+	CVector operator-(CPoint vector);
 public:
 	float m_x;
 	float m_y;

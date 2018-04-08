@@ -126,6 +126,11 @@ bool CPoint::IsOnPoint(float x, float y, float tolerance)
 	return DistanceToPoint(x, y) < tolerance;
 }
 
+CVector CPoint::operator-(CPoint point)
+{
+	return CVector(m_x - point.m_x, m_y - point.m_y);
+}
+
 CLineDefinition::CLineDefinition(const char * name, float r, float g, float b)
 {
 	m_name = name;
@@ -156,7 +161,13 @@ CVector CVector::operator*(float value)
 	return CVector(m_x*value, m_y*value);
 }
 
-CVector CVector::operator-(CVector vector)
+CVector CVector::operator+(CVector vector)
 {
-	return CVector(m_x - vector.m_x, m_y - vector.m_y);
+	return CVector(m_x + vector.m_x, m_y + vector.m_y);
+}
+
+void CVector::operator+=(CVector vector)
+{
+	m_x += vector.m_x;
+	m_y += vector.m_y;
 }

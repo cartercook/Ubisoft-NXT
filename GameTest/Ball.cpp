@@ -34,41 +34,74 @@ void Ball::Update(float deltaTime)
 	acceleration.m_y = -1; //gravity
 }
 
-void Ball::Collide(CTable table, const float bounceFactor)
+void Ball::Collide(CTable table)
 {
 	for (CLineSegment line : table.m_lines)
 	{
 		CVector vector = line.VectorToPoint(position.m_x, position.m_y);
-		
 		float overlap = radius - vector.Length();
+
 		if (overlap >= 0)
 		{
 			CVector normalized = vector.Normalized();
-			CVector separationVector = normalized * overlap;
-			position.m_x += separationVector.m_x;
-			position.m_y += separationVector.m_y;
 
-			// apply normal force
-			// x component = m*g*cos(theta)
-			// y component = m*g*sin(theta)
-			// equal and opposite force
-			acceleration.m_x -= (acceleration.m_x + acceleration.m_y) * normalized.m_x * bounceFactor;
-			acceleration.m_y -= (acceleration.m_x + acceleration.m_y) * normalized.m_y * bounceFactor;
-
-			// apply collision torque
-			// vector perpendicular to radius, scaled by distance from axis of rotation
-
-			// float dist = position
-			acceleration.m_x += 
+			ApplyNormalForce(normalized, overlap);
 		}
 	}
 }
 
-void Ball::Collide(Flipper flipper)
+int debug = -1;
+
+void Ball::Collide(const CEntityPolygon *entity)
 {
-	Collide(flipper.table);
+	//entity->table.m_lines.push_back(CLineSegment());
+	//debug = entity->table.m_lines.size();
 
+	for (CLineSegment line : entity->table.m_lines)
+	{
+		//looped = true;
 
+		CVector vector = line.VectorToPoint(position.m_x, position.m_y);
+		float overlap = radius - vector.Length();
+
+		if (overlap >= 0)
+		{
+			CVector normalized = vector.Normalized();
+
+			ApplyNormalForce(normalized, overlap);
+
+			ApplyAngularImpulse(entity);
+		}
+	}
+}
+
+void Ball::ApplyNormalForce(CVector surfaceNormal, float overlap)
+{
+	CVector separationVector = surfaceNormal * overlap;
+	position.m_x += separationVector.m_x;
+	position.m_y += separationVector.m_y;
+
+	// apply normal force
+	// x component = m*g*cos(theta)
+	// y component = m*g*sin(theta)
+	// equal and opposite force
+	acceleration.m_x -= (acceleration.m_x + acceleration.m_y) * surfaceNormal.m_x;
+	acceleration.m_y -= (acceleration.m_x + acceleration.m_y) * surfaceNormal.m_y;
+}
+
+void Ball::ApplyAngularImpulse(const CEntityPolygon *entity)
+{
+	// apply (fake) collision torque
+	// vector perpendicular to radius, scaled by distance from axis of rotation
+	CPoint entityPosition = entity->position;
+	CVector radiusVector = entityPosition - position;
+
+	// rotate radiusVector 90 degrees clockwise
+	CVector perpVector = CVector(radiusVector.m_y, -radiusVector.m_x);
+
+	CVector force = perpVector.Normalized() * entity->angularVelocity * radiusVector.Length(); // force scaled by distance from point of rotation
+
+	acceleration += force;
 }
 
 void Ball::Render()
@@ -76,7 +109,7 @@ void Ball::Render()
 	App::DrawCircle(position.m_x, position.m_y, radius, 25, 1, 1, 1);
 
 	char buffer[256];
-	snprintf(buffer, sizeof buffer, "%f, %f", velocity.m_x, velocity.m_y);
+	snprintf(buffer, sizeof buffer, "%i,", debug);
 	App::Print(0, 0, buffer);
 
 	char buffer2[256];

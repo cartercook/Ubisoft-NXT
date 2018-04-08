@@ -38,7 +38,7 @@ void Flipper::CreateTable()
 	}
 }
 
-void Flipper::TransformTable(float x, float y, float rotation)
+void Flipper::TransformTable()
 {
 	float s = sin(rotation*PI / 180);
 	float c = cos(rotation*PI / 180);
@@ -53,10 +53,10 @@ void Flipper::TransformTable(float x, float y, float rotation)
 		float endY = points[i + 1];
 
 		// rotate points by c,s and translate by x,y
-		line.m_start.m_x = x + startX * c - startY * s;
-		line.m_start.m_y = y + startX * s + startY * c;
-		line.m_end.m_x = x + endX * c - endY * s;
-		line.m_end.m_y = y + endX * s + endY * c;
+		line.m_start.m_x = position.m_x + startX * c - startY * s;
+		line.m_start.m_y = position.m_y + startX * s + startY * c;
+		line.m_end.m_x = position.m_x + endX * c - endY * s;
+		line.m_end.m_y = position.m_y + endX * s + endY * c;
 	}
 }
 
@@ -83,7 +83,7 @@ void Flipper::Update(float deltaTime)
 		}
 	}
 
-	TransformTable(position.m_x, position.m_y, rotation);
+	TransformTable();
 }
 
 void Flipper::Render()
