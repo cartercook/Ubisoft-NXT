@@ -10,9 +10,12 @@
 #include "app\app.h"
 #include "CEntity.h"
 #include "ball.h"
-#include "Editor.h"
+#include "editor.h"
+#include "flipper.h"
+
 CTable level;
 Ball ball = Ball(300, 700, 25);
+Flipper flipper = Flipper(150, 100);
 
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
@@ -29,7 +32,10 @@ void Init()
 void Update(float deltaTime)
 {
 	ball.Update(deltaTime);
+	flipper.Update(deltaTime);
+
 	ball.Collide(level);
+	ball.Collide(flipper);
 }
 
 //------------------------------------------------------------------------
@@ -39,6 +45,7 @@ void Update(float deltaTime)
 void Render()
 {
 	ball.Render();
+	flipper.Render();
 	level.Render();
 }
 

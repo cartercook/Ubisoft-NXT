@@ -20,6 +20,28 @@ void CTable::Render()
 	}
 }
 
+// https://stackoverflow.com/questions/2259476/rotating-a-point-about-another-point-2d
+void CTable::Render(float x, float y, float rotation)
+{
+	float s = sin(rotation*PI / 180);
+	float c = cos(rotation*PI / 180);
+
+	for (CLineSegment line : m_lines)
+	{
+		// rotate points
+		float startX = line.m_start.m_x * c - line.m_start.m_y * s;
+		float startY = line.m_start.m_x * s + line.m_start.m_y * c;
+		float endX = line.m_end.m_x * c - line.m_end.m_y * s;
+		float endY = line.m_end.m_x * s + line.m_end.m_y * c;
+
+		// get LineDefition
+		CLineDefinition def = m_lineDefs[line.m_type];
+
+		// translate point by (x,y)
+		App::DrawLine(x + startX, y + startY, x + endX, y + endY, def.m_Red, def.m_Green, def.m_Blue);
+	}
+}
+
 CLineSegment::CLineSegment() : CLineSegment(0.0f, 0.0f, 0.0f, 0.0f, eLine_Fail)
 {
 }
@@ -132,4 +154,9 @@ CVector CVector::Normalized()
 CVector CVector::operator*(float value)
 {
 	return CVector(m_x*value, m_y*value);
+}
+
+CVector CVector::operator-(CVector vector)
+{
+	return CVector(m_x - vector.m_x, m_y - vector.m_y);
 }

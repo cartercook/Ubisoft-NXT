@@ -9,3 +9,10 @@ public:
 	CPoint position;
 };
 
+class CEntityPolygon : public CEntity
+{
+public:
+	float rotation = 0;
+	float angularVelocity = 0;
+	CTable table;
+};

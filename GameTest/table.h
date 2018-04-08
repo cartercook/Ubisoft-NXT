@@ -19,6 +19,7 @@ public:
 	float Length();
 	CVector Normalized();
 	CVector operator*(float value);
+	CVector operator-(CVector vector);
 public:
 	float m_x;
 	float m_y;
@@ -70,6 +71,7 @@ class CTable
 public:
 	CTable();
 	void Render();
+	void Render(float x, float y, float rotation);
 public:
 	std::vector<CLineSegment> m_lines;
 	CLineDefinition m_lineDefs[eLine_END];
