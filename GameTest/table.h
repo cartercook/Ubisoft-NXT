@@ -29,6 +29,8 @@ public:
 class CPoint
 {
 public:
+	CPoint();
+	CPoint(float x, float y);
 	float DistanceToPoint(float x, float y);
 	bool IsOnPoint(float x, float y, float tolerance);
 	CVector operator-(CPoint vector);
@@ -57,6 +59,7 @@ public:
 	CLineSegment(float x1, float y1, float x2, float y2, LineType type);
 	float DistanceToLine(float x, float y);
 	CVector VectorToPoint(float x, float y);
+	CPoint NearestPoint(float x, float y);
 	bool IsOnLine(float x, float y, float tolerance = 5.0f);
 	void Render(CLineDefinition def);
 public:

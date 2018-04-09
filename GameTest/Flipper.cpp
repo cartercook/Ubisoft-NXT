@@ -4,7 +4,7 @@
 #include "table.h"
 #include "app\app.h"
 
-float points[] = {
+const float points[] = {
 	-10, 0,
 	10, 10,
 	52, 0,
@@ -15,11 +15,19 @@ float points[] = {
 };
 const int pointsLength = 14;
 
-Flipper::Flipper(float x, float y)
+Flipper::Flipper(float x, float y, bool flipped)
 {
-	position = CPoint();
-	position.m_x = x;
-	position.m_y = y;
+	position = CPoint(x, y);
+	rotation = minRotation;
+
+	if (flipped)
+	{
+		flip = -1;
+		
+		float swap = minRotation;
+		minRotation = 32;
+		maxRotation = 0;
+	}
 
 	CreateTable();
 }
@@ -47,9 +55,9 @@ void Flipper::TransformTable()
 	{
 		CLineSegment &line = table.m_lines.at(i/2 - 1);
 
-		float startX = points[i - 2];
+		float startX = points[i - 2] * flip;
 		float startY = points[i - 1];
-		float endX = points[i];
+		float endX = points[i] * flip;
 		float endY = points[i + 1];
 
 		// rotate points by c,s and translate by x,y
@@ -62,24 +70,32 @@ void Flipper::TransformTable()
 
 void Flipper::Update(float deltaTime)
 {
-	float rotationSpeed = 720 * (deltaTime / 1000);
-
 	if (App::IsKeyPressed(VK_SPACE))
 	{
-		rotation += rotationSpeed;
-
-		if (rotation > 32)
+		if (rotation < maxRotation)
 		{
-			rotation = 32;
+			angularVelocity = 720 * flip;
+			rotation += angularVelocity * (deltaTime / 1000);
+		}
+		
+		if (rotation >= maxRotation)
+		{
+			rotation = maxRotation;
+			angularVelocity = 0;
 		}
 	}
 	else
 	{
-		rotation -= rotationSpeed;
-
-		if (rotation < 0)
+		if (rotation > minRotation)
 		{
-			rotation = 0;
+			angularVelocity = -720 * flip;
+			rotation += angularVelocity * (deltaTime / 1000);
+		}
+
+		if (rotation <= minRotation)
+		{
+			rotation = minRotation;
+			angularVelocity = 0;
 		}
 	}
 
@@ -89,6 +105,12 @@ void Flipper::Update(float deltaTime)
 void Flipper::Render()
 {
 	table.Render();
+
+	/*
+	char buffer[256];
+	snprintf(buffer, sizeof buffer, "%f", angularVelocity);
+	App::Print(0, 0, buffer);
+	*/
 }
 
 Flipper::~Flipper()

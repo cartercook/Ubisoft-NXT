@@ -8,14 +8,16 @@
 #include <iostream>
 //------------------------------------------------------------------------
 #include "app\app.h"
+#include "app\main.h"
 #include "CEntity.h"
 #include "ball.h"
 #include "editor.h"
 #include "flipper.h"
 
 CTable level;
-Ball ball = Ball(300, 700, 25);
-Flipper *flipper = new Flipper(170, 250);
+Ball ball = Ball(550, 600, 25);
+Flipper *leftFlipper = new Flipper(WINDOW_WIDTH/2 - 100, 130, false);
+Flipper *rightFlipper = new Flipper(WINDOW_WIDTH/2 + 100, 130, true);
 
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
@@ -32,10 +34,12 @@ void Init()
 void Update(float deltaTime)
 {
 	ball.Update(deltaTime);
-	flipper->Update(deltaTime);
+	leftFlipper->Update(deltaTime);
+	rightFlipper->Update(deltaTime);
 
-	ball.Collide(level);
-	ball.Collide(flipper);
+	ball.Collide(level, deltaTime);
+	ball.Collide(leftFlipper, leftFlipper->table, deltaTime);
+	ball.Collide(rightFlipper, rightFlipper->table, deltaTime);
 }
 
 //------------------------------------------------------------------------
@@ -45,7 +49,8 @@ void Update(float deltaTime)
 void Render()
 {
 	ball.Render();
-	flipper->Render();
+	leftFlipper->Render();
+	rightFlipper->Render();
 	level.Render();
 }
 
@@ -55,5 +60,6 @@ void Render()
 //------------------------------------------------------------------------
 void Shutdown()
 {
-	delete flipper;
+	delete leftFlipper;
+	delete rightFlipper;
 }

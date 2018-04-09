@@ -66,6 +66,11 @@ float CLineSegment::DistanceToLine(float x, float y)
 
 CVector CLineSegment::VectorToPoint(float x, float y)
 {
+	return CPoint(x, y) - NearestPoint(x, y);
+}
+
+CPoint CLineSegment::NearestPoint(float x, float y)
+{
 	const float x0 = m_start.m_x;
 	const float x1 = m_end.m_x;
 	const float y0 = m_start.m_y;
@@ -81,10 +86,7 @@ CVector CLineSegment::VectorToPoint(float x, float y)
 	if (param < 0)
 		param = 0;
 
-	float nearestX = x0 + param * dx;
-	float nearestY = y0 + param * dy;
-
-	return CVector(x - nearestX, y - nearestY);
+	return CPoint(x0 + param * dx, y0 + param * dy);
 }
 
 /* float CLineSegment::DistanceToInfiniteLine(float x, float y)
@@ -110,6 +112,16 @@ bool CLineSegment::IsOnLine(float x, float y, float tolerance)
 void CLineSegment::Render(CLineDefinition def)
 {
 	App::DrawLine(m_start.m_x, m_start.m_y, m_end.m_x, m_end.m_y, def.m_Red, def.m_Green, def.m_Blue);
+}
+
+CPoint::CPoint()
+{
+}
+
+CPoint::CPoint(float x, float y)
+{
+	m_x = x;
+	m_y = y;
 }
 
 float CPoint::DistanceToPoint(float x, float y)
